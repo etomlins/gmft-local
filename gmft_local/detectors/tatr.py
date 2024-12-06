@@ -14,8 +14,8 @@ class TATRDetectorConfig:
     
     Specific to the TableTransformerForObjectDetection model. (Do not subclass this.)
     """
-    image_processor_path: str = "microsoft/table-transformer-detection"
-    detector_path: str = "microsoft/table-transformer-detection"
+    image_processor_path: str = "table-transformer-detection"
+    detector_path: str = "table-transformer-detection"
     no_timm: bool = True # huggingface revision
     warn_uninitialized_weights: bool = False
     torch_device: str = "cuda" if torch.cuda.is_available() else "cpu"
