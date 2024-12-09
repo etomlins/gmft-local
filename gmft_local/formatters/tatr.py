@@ -9,6 +9,9 @@ from gmft.formatters.common import FormattedTable, TableFormatter, _normalize_bb
 from gmft.pdf_bindings.common import BasePage
 import torch
 
+import os
+os.environ['TRANSFORMERS_OFFLINE'] = '1'
+os.environ['HF_DATASETS_OFFLINE'] = '1'
 
 from gmft.table_function_algorithm import extract_to_df
 from gmft.table_visualization import plot_results_unwr
@@ -23,8 +26,8 @@ class TATRFormatConfig:
     # ---- model settings ----
     
     warn_uninitialized_weights: bool = False
-    image_processor_path: str = "microsoft/table-transformer-detection"
-    formatter_path: str = "microsoft/table-transformer-structure-recognition"
+    image_processor_path: str = "C:\\Users\\TOMLIEX\\Transformers-Tutorials\\Table Transformer\\table-transformer-detection"
+    formatter_path: str = "C:\\Users\\TOMLIEX\\Transformers-Tutorials\\Table Transformer\\table-transformer-structure-recognition"
     no_timm: bool = True # use a model which uses AutoBackbone. 
     torch_device: str = "cuda" if torch.cuda.is_available() else "cpu"
     # https://huggingface.co/microsoft/table-transformer-structure-recognition/discussions/5
@@ -375,9 +378,9 @@ class TATRFormatter(TableFormatter):
         if not config.warn_uninitialized_weights:
             previous_verbosity = transformers.logging.get_verbosity()
             transformers.logging.set_verbosity(transformers.logging.ERROR)
-        self.image_processor = AutoImageProcessor.from_pretrained(config.image_processor_path)
+        self.image_processor = AutoImageProcessor.from_pretrained(config.image_processor_path,local_files_only=True)
         revision = "no_timm" if config.no_timm else None
-        self.structor = TableTransformerForObjectDetection.from_pretrained(config.formatter_path, revision=revision).to(config.torch_device)
+        self.structor = TableTransformerForObjectDetection.from_pretrained(config.formatter_path,local_files_only=True, revision=revision).to(config.torch_device)
         self.config = config
         if not config.warn_uninitialized_weights:
             transformers.logging.set_verbosity(previous_verbosity)

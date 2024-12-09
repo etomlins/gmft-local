@@ -3,6 +3,9 @@ import copy
 from dataclasses import dataclass, field
 import statistics
 from typing import Generator, Union
+import os
+os.environ['TRANSFORMERS_OFFLINE'] = '1'
+os.environ['HF_DATASETS_OFFLINE'] = '1'
 
 import numpy as np
 import pandas as pd
@@ -30,7 +33,7 @@ class DITRFormatConfig(HistogramConfig):
     # ---- model settings ----
     
     warn_uninitialized_weights: bool = False
-    image_processor_path: str = "microsoft/table-transformer-structure-recognition-v1.1-all"
+    image_processor_path: str = "C:\\Users\\TOMLIEX\\Transformers-Tutorials\\Table Transformer\\table-transformer-detection"
     formatter_path: str = "conjuncts/ditr-e15"
     # no_timm: bool = True # use a model which uses AutoBackbone. 
     torch_device: str = "cuda" if torch.cuda.is_available() else "cpu"
@@ -348,9 +351,9 @@ class DITRFormatter(TableFormatter):
         if not config.warn_uninitialized_weights:
             previous_verbosity = transformers.logging.get_verbosity()
             transformers.logging.set_verbosity(transformers.logging.ERROR)
-        self.image_processor = AutoImageProcessor.from_pretrained(config.image_processor_path)
+        self.image_processor = AutoImageProcessor.from_pretrained(config.image_processor_path,local_files_only=True)
         # revision = "no_timm" if config.no_timm else None , revision=revision
-        self.structor = TableTransformerForObjectDetection.from_pretrained(config.formatter_path).to(config.torch_device)
+        self.structor = TableTransformerForObjectDetection.from_pretrained(config.formatter_path,local_files_only=True).to(config.torch_device)
         self.config = config
         if not config.warn_uninitialized_weights:
             transformers.logging.set_verbosity(previous_verbosity)

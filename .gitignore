@@ -17,7 +17,6 @@ plans
 docs/build
 notebooks
 support_arena/*
-.pypirc
 dist/
 build/
 *.pyc

@@ -6,6 +6,10 @@ from gmft.detectors.common import BaseDetector, CroppedTable, RotatedCroppedTabl
 
 from gmft.pdf_bindings.common import BasePage
 
+import os
+os.environ['TRANSFORMERS_OFFLINE'] = '1'
+os.environ['HF_DATASETS_OFFLINE'] = '1'
+
 
 @dataclass
 class TATRDetectorConfig:
@@ -14,8 +18,8 @@ class TATRDetectorConfig:
     
     Specific to the TableTransformerForObjectDetection model. (Do not subclass this.)
     """
-    image_processor_path: str = "table-transformer-detection"
-    detector_path: str = "table-transformer-detection"
+    image_processor_path: str = "C:\\Users\\TOMLIEX\\Transformers-Tutorials\\Table Transformer\\table-transformer-detection"
+    detector_path: str = "C:\\Users\\TOMLIEX\\Transformers-Tutorials\\Table Transformer\\table-transformer-detection"
     no_timm: bool = True # huggingface revision
     warn_uninitialized_weights: bool = False
     torch_device: str = "cuda" if torch.cuda.is_available() else "cpu"
@@ -52,7 +56,7 @@ class TATRDetector(BaseDetector[TATRDetectorConfig]):
     Using :meth:`extract` produces a :class:`.FormattedTable`, which can be exported to csv, df, etc.
 
     Detects tables in a pdf page. Default implementation uses TableTransformerForObjectDetection.
-    """
+    """ 
     def __init__(self, config: TATRDetectorConfig=None, default_implementation=True):
         """
         Initialize the TableDetector.
@@ -76,10 +80,10 @@ class TATRDetector(BaseDetector[TATRDetectorConfig]):
         if not config.warn_uninitialized_weights:
             previous_verbosity = transformers.logging.get_verbosity()
             transformers.logging.set_verbosity(transformers.logging.ERROR)
-        self.image_processor = AutoImageProcessor.from_pretrained(config.image_processor_path)
+        self.image_processor = AutoImageProcessor.from_pretrained(config.image_processor_path,local_files_only=True)
         
         revision = "no_timm" if config.no_timm else None
-        self.detector = TableTransformerForObjectDetection.from_pretrained(config.detector_path, revision=revision).to(config.torch_device)
+        self.detector = TableTransformerForObjectDetection.from_pretrained(config.detector_path, revision=revision,local_files_only=True).to(config.torch_device)
         
         if not config.warn_uninitialized_weights:
             transformers.logging.set_verbosity(previous_verbosity)
