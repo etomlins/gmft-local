@@ -1,6 +1,6 @@
 [project]
-name = "gmft_local"
-version="0.4.1"
+name = "gmft_locally"
+version="0.4.4"
 description = "Lightweight, performant, deep table extraction"
 authors = [
   {name = "conjunct"},
